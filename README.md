@@ -1,6 +1,6 @@
-# Coleta Certa — Módulo de Inteligência Artificial
+# ColetaAI — Módulo de Inteligência Artificial
 
-Módulo responsável pelo processamento e pela classificação de imagens do projeto **Coleta Certa**.
+Módulo responsável pelo processamento e pela classificação de imagens do projeto **ColetaAI**.
 
 O objetivo é desenvolver um sistema de visão computacional capaz de analisar imagens e identificar se elas representam resíduos (lixo) ou não, auxiliando na validação de pontos de coleta.
 
