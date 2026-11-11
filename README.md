@@ -131,21 +131,5 @@ Fluxo previsto:
 4. O modelo retorna a classificação e sua probabilidade.
 5. O resultado é enviado ao back-end principal.
 
-## Status do desenvolvimento
-
-- [x] Criação do repositório.
-- [x] Estrutura inicial de diretórios.
-- [x] Configuração do ambiente virtual.
-- [x] Instalação das dependências.
-- [x] Criação do `requirements.txt`.
-- [ ] Pesquisa e seleção de datasets.
-- [ ] Organização das imagens para treinamento.
-- [ ] Pré-processamento das imagens.
-- [ ] Implementação e treinamento do MobileNetV3.
-- [ ] Avaliação do modelo.
-- [ ] Desenvolvimento da API com FastAPI.
-- [ ] Integração com o back-end principal.
-
----
 
 **Importante:** sempre que novas dependências forem adicionadas ao projeto, atualize o `requirements.txt` para manter o ambiente de desenvolvimento compartilhado entre os integrantes.
