@@ -218,3 +218,14 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Dados e Modelos Pesados
+data/
+models/*.pth
+models/*.h5
+
+# Ambiente Virtual Python
+venv/
+.venv/
+env/
+__pycache__/
