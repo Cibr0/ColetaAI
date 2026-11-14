@@ -1,8 +1,20 @@
 import sys
 from pathlib import Path
-from fastapi import FastAPI
+from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+
+# Garante que a raiz do repositório esteja no sys.path
+repo_root = Path(__file__).resolve().parent.parent
+if str(repo_root) not in sys.path:
+    sys.path.insert(0, str(repo_root))
+
+from api.imagem import (
+    TAMANHO_MAXIMO_BYTES,
+    ImagemInvalidaError,
+    preparar_imagem,
+    validar_imagem,
+)
 
 app = FastAPI(
     title="ColetaAI API",
@@ -42,12 +54,32 @@ def health_check():
     }
 
 
-if __name__ == "__main__":
-    # Garante que a raiz do repositório esteja no sys.path
-    repo_root = Path(__file__).resolve().parent.parent
-    if str(repo_root) not in sys.path:
-        sys.path.insert(0, str(repo_root))
+@app.post("/validar-foto", tags=["Validação"])
+def validar_foto(imagem: UploadFile = File(..., description="Imagem JPEG, PNG ou WebP (até 10 MB)")):
+    """
+    Recebe uma imagem, valida formato e integridade e a prepara para classificação.
+    """
+    # Lê um byte além do limite para detectar arquivos grandes sem carregá-los inteiros
+    conteudo = imagem.file.read(TAMANHO_MAXIMO_BYTES + 1)
 
+    try:
+        imagem_validada = validar_imagem(conteudo)
+        tensor = preparar_imagem(imagem_validada)
+    except ImagemInvalidaError as erro:
+        raise HTTPException(status_code=erro.status_code, detail=erro.mensagem)
+
+    return {
+        "status": "recebida",
+        "arquivo": imagem.filename,
+        "formato": imagem_validada.format,
+        "largura": imagem_validada.width,
+        "altura": imagem_validada.height,
+        "tamanho_bytes": len(conteudo),
+        "tensor": list(tensor.shape),
+    }
+
+
+if __name__ == "__main__":
     uvicorn.run(
         "api.main:app",
         host="0.0.0.0",
