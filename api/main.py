@@ -15,6 +15,7 @@ from api.imagem import (
     preparar_imagem,
     validar_imagem,
 )
+from api.modelo import classificar
 
 app = FastAPI(
     title="ColetaAI API",
@@ -57,7 +58,8 @@ def health_check():
 @app.post("/validar-foto", tags=["Validação"])
 def validar_foto(imagem: UploadFile = File(..., description="Imagem JPEG, PNG ou WebP (até 10 MB)")):
     """
-    Recebe uma imagem, valida formato e integridade e a prepara para classificação.
+    Recebe uma imagem, valida formato e integridade, classifica com o modelo
+    e retorna a classificação com as probabilidades.
     """
     # Lê um byte além do limite para detectar arquivos grandes sem carregá-los inteiros
     conteudo = imagem.file.read(TAMANHO_MAXIMO_BYTES + 1)
@@ -68,6 +70,8 @@ def validar_foto(imagem: UploadFile = File(..., description="Imagem JPEG, PNG ou
     except ImagemInvalidaError as erro:
         raise HTTPException(status_code=erro.status_code, detail=erro.mensagem)
 
+    resultado = classificar(tensor)
+
     return {
         "status": "recebida",
         "arquivo": imagem.filename,
@@ -76,6 +80,7 @@ def validar_foto(imagem: UploadFile = File(..., description="Imagem JPEG, PNG ou
         "altura": imagem_validada.height,
         "tamanho_bytes": len(conteudo),
         "tensor": list(tensor.shape),
+        **resultado,
     }
 
 
