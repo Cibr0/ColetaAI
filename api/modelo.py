@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 from torchvision import models
 
-CAMINHO_MODELO = Path(_file_).resolve().parent.parent / "models" / "mobilenetv3_coletacerta.pth"
+CAMINHO_MODELO = Path(__file__).resolve().parent.parent / "mobilenetv3_coletacerta.pth"
 DISPOSITIVO = torch.device("cpu")
 
 
@@ -27,10 +27,6 @@ modelo, CLASSES = _carregar_modelo()
 
 
 def classificar(tensor: torch.Tensor) -> dict:
-    """
-    Recebe o tensor (1, 3, 224, 224) e retorna a classe prevista
-    com as probabilidades de cada classe.
-    """
     with torch.no_grad():
         saida = modelo(tensor.to(DISPOSITIVO))
         probabilidades = torch.softmax(saida, dim=1)[0]
