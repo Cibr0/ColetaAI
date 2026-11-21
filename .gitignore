@@ -230,3 +230,6 @@ venv/
 env/
 __pycache__/
 *.pth
+
+node_modules/
+.env
